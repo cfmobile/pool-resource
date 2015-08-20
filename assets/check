@@ -56,6 +56,11 @@ else
   cd $destination
 fi
 
+if [ `ls $pool_name/unclaimed | wc -l` = 0 ]; then
+	echo '[]' >&3
+	exit 0
+fi
+
 {
   if [ -n "$ref" ] && git cat-file -e "$ref"; then
     git log --reverse ${ref}..HEAD --pretty='format:%H' -- $pool_name

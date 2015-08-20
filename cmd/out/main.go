@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/concourse/pool-resource/out"
+	"github.com/cfmobile/pool-resource/out"
 )
 
 func main() {
