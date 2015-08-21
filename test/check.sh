@@ -57,13 +57,42 @@ it_checks_given_pool() {
     . == [{ref: $(echo $ref3 | jq -R .)}]
   "
 
-  local ref5=$(make_commit_to_file $repo my_pool/unclaimed/file-e)
+  local ref5=$(make_commit_to_file $repo my_pool/claimed/file-e)
 
   check_uri_from_paths $repo $ref1 "my_pool" | jq -e "
     . == [
-      {ref: $(echo $ref3 | jq -R .)},
-      {ref: $(echo $ref5 | jq -R .)}
+      {ref: $(echo $ref3 | jq -R .)}
     ]
+  "
+}
+
+it_checks_given_pool_only_claimed() {
+  local repo=$(init_repo)
+  local ref1=$(make_commit_to_file $repo my_pool/claimed/file-a)
+  local ref2=$(make_commit_to_file $repo my_other_pool/claimed/file-b)
+  local ref3=$(make_commit_to_file $repo my_pool/claimed/file-c)
+
+	echo $ref1
+	echo $ref2
+	echo $ref3
+  check_uri_paths $repo "my_other_pool" | jq -e "
+    . == []
+  "
+
+  check_uri_paths $repo "my_pool" | jq -e "
+    . == []
+  "
+
+  local ref4=$(make_commit_to_file $repo my_other_pool/claimed/file-d)
+
+  check_uri_from_paths $repo $ref1 "my_pool" | jq -e "
+    . == []
+  "
+
+  local ref5=$(make_commit_to_file $repo my_pool/claimed/file-e)
+
+  check_uri_from_paths $repo $ref1 "my_pool" | jq -e "
+    . == []
   "
 }
 
@@ -104,3 +133,4 @@ run it_can_check_from_a_ref
 run it_can_check_from_a_bogus_sha
 run it_checks_given_pool
 run it_can_check_when_not_ff
+run it_checks_given_pool_only_claimed

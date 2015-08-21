@@ -57,14 +57,14 @@ else
 fi
 
 if [ `ls $pool_name/unclaimed | wc -l` = 0 ]; then
-	echo '[]' >&3
-	exit 0
+  echo '[]' >&3
+  exit 0
 fi
 
 {
   if [ -n "$ref" ] && git cat-file -e "$ref"; then
-    git log --reverse ${ref}..HEAD --pretty='format:%H' -- $pool_name
+    git log --reverse ${ref}..HEAD --pretty='format:%H' -- $pool_name/unclaimed
   else
-    git log -1 --pretty='format:%H' -- $pool_name
+    git log -1 --pretty='format:%H' -- $pool_name/unclaimed
   fi
  } | jq -R '.' | jq -s "map({ref: .})" >&3
